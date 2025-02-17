@@ -43,30 +43,30 @@ const Header = () => {
             />
           </Link>
           <nav className="hidden md:flex space-x-4">
-            <Link href="/" className="text-sm text-white hover:text-gray-300">
+            <Link href="/" className="text-base text-white hover:text-gray-300">
               Inicio
             </Link>
             <Link
               href="/series"
-              className="text-sm text-white hover:text-gray-300"
+              className="text-base text-white hover:text-gray-300"
             >
               Series
             </Link>
             <Link
               href="/movies"
-              className="text-sm text-white hover:text-gray-300"
+              className="text-base text-white hover:text-gray-300"
             >
               Películas
             </Link>
             <Link
               href="/new"
-              className="text-sm text-white hover:text-gray-300"
+              className="text-base text-white hover:text-gray-300"
             >
               Novedades
             </Link>
             <Link
               href="/list"
-              className="text-sm text-white hover:text-gray-300"
+              className="text-base text-white hover:text-gray-300"
             >
               Mi lista
             </Link>
