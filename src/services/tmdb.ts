@@ -40,9 +40,14 @@ export const tmdbService = {
 
 
     getMovieDetails: async (movieId: number): Promise<MovieDetails> => {
-        const response = await api.get<MovieDetails>(`/movie/${movieId}`);
-        return response.data;
-    },
+        try {
+          const response = await api.get<MovieDetails>(`/movie/${movieId}`);
+          return response.data;
+        } catch (error) {
+          console.error('Error fetching movie details:', error);
+          throw error;
+        }
+      },
 
 
     searchMovies: async (query: string, page = 1): Promise<MoviesResponse> => {
