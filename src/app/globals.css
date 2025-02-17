@@ -65,7 +65,7 @@ html {
 
 .slick-list {
   overflow: visible !important;
-  margin: 0 -8px;
+  margin: 0;
 }
 
 .slick-track {
@@ -74,13 +74,14 @@ html {
 }
 
 .slick-slide {
-  padding: 0 4px;
+  padding: 0 2px;
   transition: all 0.3s ease;
   height: auto !important;
 }
 
 .slick-slide > div {
   height: 100%;
+  width: 100%;
 }
 
 .slick-slide:hover {
@@ -93,8 +94,8 @@ html {
 }
 
 .slick-slider {
-  margin-bottom: 0 !important;
-  padding-bottom: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
 .movie-card-image {
@@ -104,7 +105,20 @@ html {
   object-fit: cover;
 }
 
-.carousel-content {
-  position: relative;
-  z-index: 1;
+.carousel-content .slick-track {
+  display: flex !important;
+  gap: 0.25rem;
+}
+
+.carousel-content .slick-slide {
+  height: inherit !important;
+  display: flex !important;
+  justify-content: flex-start !important;
+  padding-right: 0.25rem;
+}
+
+.carousel-content .slick-slide > div {
+  width: 100%;
+  display: flex !important;
+  justify-content: flex-start !important;
 }

@@ -2,12 +2,12 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDownIcon, HandThumbUpIcon, PlayIcon, PlusIcon } from '@heroicons/react/24/solid';
 import { getImageUrl } from '@/src/services/tmdb';
 import { Movie } from '@/src/types/movie';
 import Link from 'next/link';
-
+import { useFavoritesContext } from '@/src/hooks/useFavorites';
 
 interface MovieCardProps {
   movie: Movie;
@@ -15,31 +15,27 @@ interface MovieCardProps {
 
 const MovieCard = ({ movie }: MovieCardProps) => {
   const [isHovered, setIsHovered] = useState(false);
+  const { addToFavorites, removeFromFavorites, isFavorite } = useFavoritesContext();
+  const isMovieFavorite = isFavorite(movie.id);
+
+  const handleFavoriteClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    isMovieFavorite ? removeFromFavorites(movie.id) : addToFavorites(movie);
+  };
 
   return (
-    <Link 
-      href={`/movie/${movie.id}`}
-      className="relative group aspect-[2/3] w-full block"
-      onClick={(e) => {
-        if (!movie.id) {
-          e.preventDefault();
-          console.error('No movie ID available');
-        }
-      }}
-    >
+    <Link href={`/movie/${movie.id}`} className="relative block w-full">
       <div 
-        className="relative h-full"
+        className="relative aspect-[2/3]"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
-
-        <div className="absolute inset-0 rounded-md overflow-hidden">
+        <div className="absolute inset-0 rounded-lg overflow-hidden">
           <Image
             src={getImageUrl(movie.poster_path, 'w500')}
             alt={movie.title}
             fill
-            sizes="(max-width: 640px) 150px, 200px"
-            className="movie-card-image"
+            className="object-cover"
             priority={false}
           />
         </div>
@@ -48,46 +44,45 @@ const MovieCard = ({ movie }: MovieCardProps) => {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="absolute inset-0 bg-netflix-black/80 rounded-md p-2 flex flex-col justify-between"
+            className="absolute inset-0 bg-netflix-black/90 rounded-lg p-3 flex flex-col justify-start"
           >
-            <div>
-              <h3 className="text-white text-sm font-semibold line-clamp-2">{movie.title}</h3>
-              <div className="flex space-x-1 mt-2">
-                <button 
-                  className="p-1 bg-white rounded-full hover:bg-white/80"
-                  onClick={(e) => e.preventDefault()}
-                >
-                  <PlayIcon className="w-3 h-3 text-netflix-black" />
-                </button>
-                <button 
-                  className="p-1 bg-netflix-dark rounded-full border border-netflix-gray hover:border-white"
-                  onClick={(e) => e.preventDefault()}
-                >
-                  <PlusIcon className="w-3 h-3 text-white" />
-                </button>
-                <button 
-                  className="p-1 bg-netflix-dark rounded-full border border-netflix-gray hover:border-white"
-                  onClick={(e) => e.preventDefault()}
-                >
-                  <HandThumbUpIcon className="w-3 h-3 text-white" />
-                </button>
-                <button 
-                  className="p-1 bg-netflix-dark rounded-full border border-netflix-gray hover:border-white ml-auto"
-                  onClick={(e) => e.preventDefault()}
-                >
-                  <ChevronDownIcon className="w-3 h-3 text-white" />
-                </button>
-              </div>
+            <h3 className="text-white text-sm font-bold mb-2">{movie.title}</h3>
+            
+            <div className="flex space-x-2 mb-4">
+              <button className="p-1 bg-white rounded-full hover:bg-white/80">
+                <PlayIcon className="w-4 h-4 text-netflix-black" />
+              </button>
+              <button 
+                className={`p-1 rounded-full border transition-colors ${
+                  isMovieFavorite ? 'bg-netflix-red border-netflix-red hover:bg-netflix-red/80' : 'bg-netflix-dark border-netflix-gray hover:border-white'
+                }`}
+                onClick={handleFavoriteClick}
+              >
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={isMovieFavorite ? 'check' : 'plus'}
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    exit={{ scale: 0 }}
+                    transition={{ duration: 0.15 }}
+                  >
+                    <PlusIcon className={`w-4 h-4 text-white ${isMovieFavorite ? 'rotate-45' : ''}`} />
+                  </motion.div>
+                </AnimatePresence>
+              </button>
+              <button className="p-1 bg-netflix-dark rounded-full border border-netflix-gray hover:border-white">
+                <HandThumbUpIcon className="w-4 h-4 text-white" />
+              </button>
+              <button className="p-1 bg-netflix-dark rounded-full border border-netflix-gray hover:border-white">
+                <ChevronDownIcon className="w-4 h-4 text-white" />
+              </button>
             </div>
-
-            <div className="text-[10px] text-white/80">
-              <div className="flex items-center space-x-2 mb-1">
-                <span className="text-green-500 font-semibold">
-                  {Math.round(movie.vote_average * 10)}% coincidencia
-                </span>
-              </div>
-              <p className="line-clamp-2">{movie.overview}</p>
-            </div>
+            
+            <span className="text-green-500 text-xs font-semibold mb-4">{Math.round(movie.vote_average * 10)}% coincidencia</span>
+            
+            <p className="text-white/80 text-xs">
+              {movie.overview}
+            </p>
           </motion.div>
         )}
       </div>

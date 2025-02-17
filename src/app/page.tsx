@@ -4,6 +4,7 @@
 import Hero from '../components/home/Hero';
 import MovieCarousel from '../components/movie/MovieCarousel';
 import { useMovies } from '../hooks/useMovies';
+import { useFavoritesContext } from '../hooks/useFavorites';
 
 export default function HomePage() {
   const { 
@@ -14,6 +15,8 @@ export default function HomePage() {
     isLoading, 
     error 
   } = useMovies();
+
+  const { favorites, isLoading: favoritesLoading } = useFavoritesContext();
 
   if (isLoading) {
     return (
@@ -36,6 +39,13 @@ export default function HomePage() {
       {featuredMovie && <Hero movie={featuredMovie} />}
       
       <div className="relative z-10 mt-[-150px]">
+        {!favoritesLoading && favorites.length > 0 && (
+          <MovieCarousel
+            title="Mi Lista"
+            movies={favorites}
+          />
+        )}
+
         {popularMovies.length > 0 && (
           <MovieCarousel
             title="Populares en Netflix"
