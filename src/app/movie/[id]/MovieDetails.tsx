@@ -7,9 +7,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { PlayIcon, PlusIcon, CheckIcon, HandThumbUpIcon } from '@heroicons/react/24/solid';
 import { ChevronLeftIcon } from '@heroicons/react/24/outline';
 import { MovieDetails as MovieDetailsType } from '@/src/types/movie';
-import { tmdbService, getImageUrl } from '@/src/services/tmdb';
+import { tmdbService, getImageUrl, Genre } from '@/src/services/tmdb';
 import { useFavoritesContext } from '@/src/hooks/useFavorites';
-import { Genre } from '@/src/services/tmdb';
+import ContentCarousel from '@/src/components/recommendations/ContentCarousel';
+import { Movie } from '@/src/types/movie';
 
 interface MovieDetailsProps {
   movieId: string;
@@ -18,6 +19,8 @@ interface MovieDetailsProps {
 export default function MovieDetails({ movieId }: MovieDetailsProps) {
   const [movie, setMovie] = useState<MovieDetailsType | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [recommendations, setRecommendations] = useState<Movie[]>([]);
+  const [similarMovies, setSimilarMovies] = useState<Movie[]>([]);
   const { addToFavorites, removeFromFavorites, isFavorite } = useFavoritesContext();
 
   useEffect(() => {
@@ -26,6 +29,13 @@ export default function MovieDetails({ movieId }: MovieDetailsProps) {
         setIsLoading(true);
         const movieData = await tmdbService.getMovieDetails(parseInt(movieId));
         setMovie(movieData);
+
+        const [recommendationsData, similarData] = await Promise.all([
+          tmdbService.getMovieRecommendations(parseInt(movieId)),
+          tmdbService.getSimilarMovies(parseInt(movieId))
+        ]);
+        setRecommendations(recommendationsData.results);
+        setSimilarMovies(similarData.results);
       } catch (error) {
         console.error('Error fetching movie details:', error);
       } finally {
@@ -188,6 +198,25 @@ export default function MovieDetails({ movieId }: MovieDetailsProps) {
               </div>
             </div>
           </div>
+        </div>
+
+
+        <div className="relative z-10 mt-8 pb-20 overflow-x-hidden">
+          {recommendations.length > 0 && (
+            <ContentCarousel
+              title="Recomendaciones"
+              items={recommendations}
+              type="movie"
+            />
+          )}
+          
+          {similarMovies.length > 0 && (
+            <ContentCarousel
+              title="Títulos similares"
+              items={similarMovies}
+              type="movie"
+            />
+          )}
         </div>
       </motion.div>
     </div>

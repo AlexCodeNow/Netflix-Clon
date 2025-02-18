@@ -95,7 +95,6 @@ html {
 
 .slick-slider {
   margin: 0 !important;
-  padding: 0 !important;
 }
 
 .movie-card-image {
@@ -130,4 +129,26 @@ html {
 
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
+}
+
+.recommendations-carousel {
+  margin: 0 -16px;
+}
+
+.recommendations-carousel .slick-list {
+  overflow: visible !important;
+  margin: 0 !important;
+}
+
+.recommendations-carousel .slick-track {
+  margin-left: 0 !important;
+  display: flex !important;
+}
+
+.recommendations-carousel h2 {
+  padding-left: 16px;
+}
+
+.recommendations-carousel .slick-slide {
+  padding: 0 4px;
 }

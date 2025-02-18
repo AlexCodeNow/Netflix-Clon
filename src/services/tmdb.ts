@@ -121,6 +121,16 @@ export const tmdbService = {
     return response.data.genres;
   },
 
+  getMovieRecommendations: async (movieId: number): Promise<MoviesResponse> => {
+    const response = await api.get<MoviesResponse>(`/movie/${movieId}/recommendations`);
+    return response.data;
+  },
+
+  getSimilarMovies: async (movieId: number): Promise<MoviesResponse> => {
+    const response = await api.get<MoviesResponse>(`/movie/${movieId}/similar`);
+    return response.data;
+  },
+
 
   getPopularTVShows: async (page = 1): Promise<TVShowResponse> => {
     const response = await api.get<TVShowResponse>('/tv/popular', {
@@ -159,11 +169,23 @@ export const tmdbService = {
     return response.data;
   },
 
+  getTVShowRecommendations: async (tvId: number): Promise<TVShowResponse> => {
+    const response = await api.get<TVShowResponse>(`/tv/${tvId}/recommendations`);
+    return response.data;
+  },
+
+  getSimilarTVShows: async (tvId: number): Promise<TVShowResponse> => {
+    const response = await api.get<TVShowResponse>(`/tv/${tvId}/similar`);
+    return response.data;
+  },
+
   getTVGenres: async (): Promise<Genre[]> => {
     const response = await api.get<GenresResponse>('/genre/tv/list');
     return response.data.genres;
   },
 };
+
+
 
 export const getImageUrl = (path: string, size: string = 'original'): string => {
   return `${process.env.NEXT_PUBLIC_TMDB_IMAGE_BASE_URL}/${size}${path}`;
