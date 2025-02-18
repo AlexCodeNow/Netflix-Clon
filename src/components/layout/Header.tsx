@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { BellIcon } from '@heroicons/react/24/outline';
 import SearchBar from '../ui/SearchBar';
+import ProfileMenu from '../ui/ProfileMenu';
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -74,18 +75,12 @@ const Header = () => {
           </nav>
         </div>
 
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center space-x-6">
           <SearchBar />
           <button className="text-white hover:text-gray-300">
             <BellIcon className="w-6 h-6" />
           </button>
-          <Image
-            src="/images/default-profile.png"
-            alt="Profile"
-            width={32}
-            height={32}
-            className="rounded cursor-pointer"
-          />
+          <ProfileMenu />
         </div>
       </div>
     </motion.header>
