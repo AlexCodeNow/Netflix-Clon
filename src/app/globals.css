@@ -122,3 +122,12 @@ html {
   display: flex !important;
   justify-content: flex-start !important;
 }
+
+.scrollbar-hide {
+  -ms-overflow-style: none; 
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}

@@ -4,7 +4,8 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
-import { MagnifyingGlassIcon, BellIcon } from '@heroicons/react/24/outline';
+import { BellIcon } from '@heroicons/react/24/outline';
+import SearchBar from '../ui/SearchBar';
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -53,7 +54,7 @@ const Header = () => {
               Series
             </Link>
             <Link
-              href="/movies"
+              href="/genres"
               className="text-base text-white hover:text-gray-300"
             >
               Películas
@@ -74,9 +75,7 @@ const Header = () => {
         </div>
 
         <div className="flex items-center space-x-4">
-          <button className="text-white hover:text-gray-300">
-            <MagnifyingGlassIcon className="w-6 h-6" />
-          </button>
+          <SearchBar />
           <button className="text-white hover:text-gray-300">
             <BellIcon className="w-6 h-6" />
           </button>
