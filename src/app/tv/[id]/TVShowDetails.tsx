@@ -3,48 +3,61 @@
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { PlayIcon, PlusIcon, CheckIcon, HandThumbUpIcon } from '@heroicons/react/24/solid';
 import { ChevronLeftIcon } from '@heroicons/react/24/outline';
-import { MovieDetails as MovieDetailsType } from '@/src/types/movie';
-import { tmdbService, getImageUrl } from '@/src/services/tmdb';
+import { TVShowDetails, tmdbService, getImageUrl } from '@/src/services/tmdb';
+import { Movie } from '@/src/types/movie';
 import { useFavoritesContext } from '@/src/hooks/useFavorites';
-import { Genre } from '@/src/services/tmdb';
 
-interface MovieDetailsProps {
-  movieId: string;
+interface TVShowDetailsProps {
+  showId: string;
 }
 
-export default function MovieDetails({ movieId }: MovieDetailsProps) {
-  const [movie, setMovie] = useState<MovieDetailsType | null>(null);
+export default function TVShowDetailsComponent({ showId }: TVShowDetailsProps) {
+  const [show, setShow] = useState<TVShowDetails | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const { addToFavorites, removeFromFavorites, isFavorite } = useFavoritesContext();
 
   useEffect(() => {
-    const fetchMovie = async () => {
+    const fetchShow = async () => {
       try {
         setIsLoading(true);
-        const movieData = await tmdbService.getMovieDetails(parseInt(movieId));
-        setMovie(movieData);
+        const showData = await tmdbService.getTVShowDetails(parseInt(showId));
+        setShow(showData);
       } catch (error) {
-        console.error('Error fetching movie details:', error);
+        console.error('Error fetching TV show details:', error);
       } finally {
         setIsLoading(false);
       }
     };
 
-    if (movieId) {
-      fetchMovie();
-    }
-  }, [movieId]);
+    fetchShow();
+  }, [showId]);
 
   const handleFavoriteClick = () => {
-    if (!movie) return;
-    
-    if (isFavorite(movie.id)) {
-      removeFromFavorites(movie.id);
+    if (!show) return;
+
+    if (isFavorite(show.id)) {
+      removeFromFavorites(show.id);
     } else {
-      addToFavorites(movie);
+      const movieFormat: Movie = {
+        id: show.id,
+        title: show.name,
+        backdrop_path: show.backdrop_path,
+        poster_path: show.poster_path,
+        overview: show.overview,
+        release_date: show.first_air_date,
+        vote_average: show.vote_average,
+        vote_count: show.vote_count,
+        genre_ids: show.genres.map(g => g.id),
+        popularity: show.popularity,
+        adult: false,
+        original_language: show.original_language,
+        media_type: 'tv'
+      };
+
+      addToFavorites(movieFormat);
     }
   };
 
@@ -56,21 +69,21 @@ export default function MovieDetails({ movieId }: MovieDetailsProps) {
     );
   }
 
-  if (!movie) {
+  if (!show) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <p className="text-white/80">No se encontró la película</p>
+        <p className="text-white/80">No se encontró la serie</p>
       </div>
     );
   }
 
-  const isMovieFavorite = isFavorite(movie.id);
+  const isShowFavorite = isFavorite(show.id);
 
   return (
     <div className="relative min-h-screen bg-netflix-black">
 
       <Link
-        href="/"
+        href="/series"
         className="absolute top-4 left-4 z-20 text-white hover:text-white/80 transition-colors"
       >
         <ChevronLeftIcon className="w-8 h-8" />
@@ -78,20 +91,14 @@ export default function MovieDetails({ movieId }: MovieDetailsProps) {
 
 
       <div className="absolute inset-0">
-
-        <div className="absolute inset-0 bg-netflix-black/80" />
-        
         <Image
-          src={getImageUrl(movie.backdrop_path)}
-          alt={movie.title}
+          src={getImageUrl(show.backdrop_path)}
+          alt={show.name}
           fill
           priority
-          className="object-cover opacity-60"
+          className="object-cover"
         />
-        
-
-        <div className="absolute inset-0 bg-gradient-to-b from-netflix-black/80 via-netflix-black/60 to-netflix-black" />
-        <div className="absolute inset-0 bg-gradient-to-r from-netflix-black/90 via-netflix-black/60 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-b from-netflix-black/60 via-netflix-black/40 to-netflix-black" />
       </div>
 
 
@@ -104,23 +111,22 @@ export default function MovieDetails({ movieId }: MovieDetailsProps) {
 
           <div className="relative aspect-[2/3] rounded-md overflow-hidden shadow-2xl">
             <Image
-              src={getImageUrl(movie.poster_path, 'w500')}
-              alt={movie.title}
+              src={getImageUrl(show.poster_path, 'w500')}
+              alt={show.name}
               fill
               className="object-cover"
             />
           </div>
 
-
-          <div className="text-white space-y-4 p-6 bg-netflix-black/40 backdrop-blur-sm rounded-lg">
-            <h1 className="text-4xl md:text-5xl font-bold">{movie.title}</h1>
+          <div className="text-white space-y-4">
+            <h1 className="text-4xl md:text-5xl font-bold">{show.name}</h1>
             
             <div className="flex items-center space-x-4 text-sm">
               <span className="text-green-500 font-semibold">
-                {Math.round(movie.vote_average * 10)}% coincidencia
+                {Math.round(show.vote_average * 10)}% coincidencia
               </span>
-              <span>{new Date(movie.release_date).getFullYear()}</span>
-              <span>{Math.floor(movie.runtime / 60)}h {movie.runtime % 60}m</span>
+              <span>{new Date(show.first_air_date).getFullYear()}</span>
+              <span>{show.number_of_seasons} temporadas</span>
             </div>
 
             <div className="flex space-x-3">
@@ -130,60 +136,49 @@ export default function MovieDetails({ movieId }: MovieDetailsProps) {
               </button>
               <motion.button 
                 className={`flex items-center justify-center px-6 py-2 font-semibold rounded transition-colors ${
-                  isMovieFavorite 
+                  isShowFavorite 
                     ? 'bg-netflix-red text-white hover:bg-netflix-red/80'
                     : 'bg-gray-500/70 text-white hover:bg-gray-500/50'
                 }`}
                 onClick={handleFavoriteClick}
                 whileTap={{ scale: 0.95 }}
               >
-                <AnimatePresence mode="wait">
-                  <motion.div
-                    key={isMovieFavorite ? 'check' : 'plus'}
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    exit={{ scale: 0 }}
-                    transition={{ duration: 0.15 }}
-                    className="flex items-center"
-                  >
-                    {isMovieFavorite ? (
-                      <>
-                        <CheckIcon className="w-6 h-6 mr-2" />
-                        En Mi Lista
-                      </>
-                    ) : (
-                      <>
-                        <PlusIcon className="w-6 h-6 mr-2" />
-                        Añadir a Mi Lista
-                      </>
-                    )}
-                  </motion.div>
-                </AnimatePresence>
+                {isShowFavorite ? (
+                  <>
+                    <CheckIcon className="w-6 h-6 mr-2" />
+                    En Mi Lista
+                  </>
+                ) : (
+                  <>
+                    <PlusIcon className="w-6 h-6 mr-2" />
+                    Mi Lista
+                  </>
+                )}
               </motion.button>
               <button className="flex items-center justify-center px-6 py-2 bg-gray-500/70 text-white font-semibold rounded hover:bg-gray-500/50 transition">
                 <HandThumbUpIcon className="w-6 h-6" />
               </button>
             </div>
 
-            <p className="text-lg text-white/90 leading-relaxed">{movie.overview}</p>
+            <p className="text-lg text-white/90 leading-relaxed">{show.overview}</p>
 
             <div className="pt-4 border-t border-white/20">
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <span className="text-white/60">Géneros: </span>
-                  <span>{movie.genres.map((g: Genre) => g.name).join(', ')}</span>
-                </div>
-                <div>
-                  <span className="text-white/60">Idioma original: </span>
-                  <span>{movie.original_language.toUpperCase()}</span>
-                </div>
-                <div>
-                  <span className="text-white/60">Puntuación total: </span>
-                  <span>{movie.vote_average.toFixed(1)} ({movie.vote_count} votos)</span>
+                  <span>{show.genres.map(g => g.name).join(', ')}</span>
                 </div>
                 <div>
                   <span className="text-white/60">Estado: </span>
-                  <span>{movie.status}</span>
+                  <span>{show.status}</span>
+                </div>
+                <div>
+                  <span className="text-white/60">Red: </span>
+                  <span>{show.networks?.[0]?.name || 'N/A'}</span>
+                </div>
+                <div>
+                  <span className="text-white/60">Tipo: </span>
+                  <span>{show.type || 'N/A'}</span>
                 </div>
               </div>
             </div>

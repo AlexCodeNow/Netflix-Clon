@@ -2,29 +2,29 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
-import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDownIcon, HandThumbUpIcon, PlayIcon, PlusIcon } from '@heroicons/react/24/solid';
-import { getImageUrl } from '@/src/services/tmdb';
-import { Movie } from '@/src/types/movie';
 import Link from 'next/link';
+import { motion, AnimatePresence } from 'framer-motion';
+import { PlayIcon, PlusIcon, HandThumbUpIcon, ChevronDownIcon } from '@heroicons/react/24/solid';
+import { getImageUrl } from '@/src/services/tmdb';
+import { TVShow } from '@/src/services/tmdb';
 import { useFavoritesContext } from '@/src/hooks/useFavorites';
 
-interface MovieCardProps {
-  movie: Movie;
+interface TVShowCardProps {
+  show: TVShow;
 }
 
-const MovieCard = ({ movie }: MovieCardProps) => {
+const TVShowCard = ({ show }: TVShowCardProps) => {
   const [isHovered, setIsHovered] = useState(false);
   const { addToFavorites, removeFromFavorites, isFavorite } = useFavoritesContext();
-  const isMovieFavorite = isFavorite(movie.id);
+  const isShowFavorite = isFavorite(show.id);
 
   const handleFavoriteClick = (e: React.MouseEvent) => {
     e.preventDefault();
-    isMovieFavorite ? removeFromFavorites(movie.id) : addToFavorites(movie);
+    isShowFavorite ? removeFromFavorites(show.id) : addToFavorites(show as any); // alex, esto es temporal, mirame tu no eres asi
   };
 
   return (
-    <Link href={`/movie/${movie.id}`} className="relative block w-full">
+    <Link href={`/tv/${show.id}`} className="relative block w-full">
       <div 
         className="relative aspect-[2/3]"
         onMouseEnter={() => setIsHovered(true)}
@@ -32,8 +32,8 @@ const MovieCard = ({ movie }: MovieCardProps) => {
       >
         <div className="absolute inset-0 rounded-lg overflow-hidden">
           <Image
-            src={getImageUrl(movie.poster_path, 'w500')}
-            alt={movie.title}
+            src={getImageUrl(show.poster_path, 'w500')}
+            alt={show.name}
             fill
             className="object-cover"
             priority={false}
@@ -46,7 +46,7 @@ const MovieCard = ({ movie }: MovieCardProps) => {
             animate={{ opacity: 1, y: 0 }}
             className="absolute inset-0 bg-netflix-black/90 rounded-lg p-3 flex flex-col justify-start"
           >
-            <h3 className="text-white text-sm font-bold mb-2">{movie.title}</h3>
+            <h3 className="text-white text-sm font-bold mb-2">{show.name}</h3>
             
             <div className="flex space-x-2 mb-4">
               <button className="p-1 bg-white rounded-full hover:bg-white/80">
@@ -54,19 +54,19 @@ const MovieCard = ({ movie }: MovieCardProps) => {
               </button>
               <button 
                 className={`p-1 rounded-full border transition-colors ${
-                  isMovieFavorite ? 'bg-netflix-red border-netflix-red hover:bg-netflix-red/80' : 'bg-netflix-dark border-netflix-gray hover:border-white'
+                  isShowFavorite ? 'bg-netflix-red border-netflix-red hover:bg-netflix-red/80' : 'bg-netflix-dark border-netflix-gray hover:border-white'
                 }`}
                 onClick={handleFavoriteClick}
               >
                 <AnimatePresence mode="wait">
                   <motion.div
-                    key={isMovieFavorite ? 'check' : 'plus'}
+                    key={isShowFavorite ? 'check' : 'plus'}
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
                     exit={{ scale: 0 }}
                     transition={{ duration: 0.15 }}
                   >
-                    <PlusIcon className={`w-4 h-4 text-white ${isMovieFavorite ? 'rotate-45' : ''}`} />
+                    <PlusIcon className={`w-4 h-4 text-white ${isShowFavorite ? 'rotate-45' : ''}`} />
                   </motion.div>
                 </AnimatePresence>
               </button>
@@ -78,14 +78,11 @@ const MovieCard = ({ movie }: MovieCardProps) => {
               </button>
             </div>
             
-            <span className="text-green-500 text-xs font-semibold mb-4">{Math.round(movie.vote_average * 10)}% coincidencia</span>
+            <span className="text-green-500 text-xs font-semibold mb-4">{Math.round(show.vote_average * 10)}% coincidencia</span>
             
-            <div className="relative">
-              <p className="text-white/80 text-xs line-clamp-6">
-                {movie.overview}
-              </p>
-            <div className="absolute bottom-0 left-0 w-full h-4 bg-gradient-to-t from-netflix-black/80 to-transparent"></div>
-            </div>
+            <p className="text-white/80 text-xs line-clamp-4">
+              {show.overview}
+            </p>
           </motion.div>
         )}
       </div>
@@ -93,4 +90,4 @@ const MovieCard = ({ movie }: MovieCardProps) => {
   );
 };
 
-export default MovieCard;
+export default TVShowCard;
