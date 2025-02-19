@@ -1,36 +1,95 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🎬 Netflix Clone
 
-## Getting Started
+## Descripción General
+Este proyecto es una réplica funcional de Netflix, desarrollada como ejercicio de aprendizaje y demostración de habilidades en desarrollo web moderno. La aplicación replica la experiencia visual y funcional de Netflix, incorporando características clave como navegación fluida, gestión de favoritos y una interfaz de usuario responsive.
 
-First, run the development server:
+## ✨ Características Clave
+
+### Interfaz de Usuario
+- Diseño fiel al estilo Netflix con tema oscuro y acentos en rojo
+- Carruseles dinámicos por categorías de películas
+- Sistema de grid para presentación de miniaturas con efectos hover
+- Animaciones fluidas en transiciones y efectos de usuario
+- Página detallada de películas con información completa
+
+### Funcionalidad
+- Búsqueda avanzada de películas con filtros múltiples
+- Sistema de favoritos con persistencia local
+- Navegación intuitiva entre páginas y secciones
+- Carruseles personalizados por categorías
+- Integración con API real de películas (TMDb)
+
+## 📸 Capturas de Pantalla
+
+### Página Principal
+![Página Principal](/public/screenshots/aaimage.png)
+*Vista general de la página principal con carruseles y grid de películas*
+
+### Detalles de Película
+![Detalles de Película](/public/screenshots/aaimage4.png)
+*Página de detalles mostrando información completa de la película*
+
+### Búsqueda y Filtros
+![Búsqueda](/public/screenshots/aaimage3.png)
+*Sistema de búsqueda con filtros activos*
+
+### Mi Lista
+![Mi Lista](/public/screenshots/aaimage5.png)
+*Sección de películas favoritas guardadas*
+
+## 🛠 Tecnologías Utilizadas
+
+### Frontend
+- **React + Next.js**: Framework principal para SSR e ISR
+- **Tailwind CSS**: Sistema de estilos
+- **Zustand**: Gestión de estado
+- **Framer Motion**: Biblioteca de animaciones
+- **React-Slick**: Componente de carrusel
+
+### Integración y Datos
+- **TMDb API**: Fuente de datos de películas
+- **LocalStorage**: Persistencia de datos locales
+
+## 💡 Desafíos y Aprendizajes
+
+### Desafíos Superados
+- Implementación de carruseles personalizados manteniendo el rendimiento
+- Gestión eficiente del estado global con Zustand
+- Optimización de rendimiento con SSR e ISR
+- Desarrollo de una interfaz fluida y responsive
+- Manejo de caché y estados locales para favoritos
+
+### Aprendizajes Clave
+- Profundización en Next.js y sus estrategias de renderizado
+- Mejores prácticas en la gestión de estado global
+- Optimización de rendimiento en aplicaciones React
+- Implementación de animaciones complejas
+- Desarrollo de componentes reutilizables
+
+## 🚀 Instalación y Uso
 
 ```bash
+# Clonar el repositorio
+git clone [https://github.com/AlexCodeNow/Netflix-Clon.git]
+
+# Instalar dependencias
+npm install
+
+# Configurar variables de entorno
+cp .env.example .env.local
+# Añadir tu API key de TMDb
+
+# Iniciar el servidor de desarrollo
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 📝 Requisitos Previos
+- Node.js 16.x o superior
+- API key de TMDb
+- npm o yarn
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🤝 Contribución
+Las contribuciones son bienvenidas. Por favor, abre un issue primero para discutir los cambios que te gustaría realizar.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 📜 Licencia
+Este proyecto está bajo la Licencia MIT - ver el archivo LICENSE.md para más detalles.
