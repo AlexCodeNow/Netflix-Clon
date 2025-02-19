@@ -6,10 +6,11 @@ import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { PlayIcon, PlusIcon, CheckIcon, HandThumbUpIcon } from '@heroicons/react/24/solid';
 import { ChevronLeftIcon } from '@heroicons/react/24/outline';
-import { TVShowDetails, tmdbService, getImageUrl, Genre, TVShow } from '@/src/services/tmdb';
+import { TVShowDetails, tmdbService, getImageUrl, Genre, TVShow, Video } from '@/src/services/tmdb';
 import { Movie } from '@/src/types/movie';
 import { useFavoritesContext } from '@/src/hooks/useFavorites';
 import ContentCarousel from '@/src/components/recommendations/ContentCarousel';
+import TrailerPlayer from '@/src/components/player/TrailerPlayer';
 
 interface TVShowDetailsProps {
   showId: string;
@@ -20,21 +21,25 @@ export default function TVShowDetailsComponent({ showId }: TVShowDetailsProps) {
   const [isLoading, setIsLoading] = useState(true);
   const [recommendations, setRecommendations] = useState<TVShow[]>([]);
   const [similarShows, setSimilarShows] = useState<TVShow[]>([]);
+  const [videos, setVideos] = useState<Video[]>([]);
+  const [isTrailerPlaying, setIsTrailerPlaying] = useState(false);
   const { addToFavorites, removeFromFavorites, isFavorite } = useFavoritesContext();
 
   useEffect(() => {
     const fetchShow = async () => {
       try {
         setIsLoading(true);
-        const showData = await tmdbService.getTVShowDetails(parseInt(showId));
-        setShow(showData);
-
-        const [recommendationsData, similarData] = await Promise.all([
+        const [showData, recommendationsData, similarData, videosData] = await Promise.all([
+          tmdbService.getTVShowDetails(parseInt(showId)),
           tmdbService.getTVShowRecommendations(parseInt(showId)),
-          tmdbService.getSimilarTVShows(parseInt(showId))
+          tmdbService.getSimilarTVShows(parseInt(showId)),
+          tmdbService.getTVShowVideos(parseInt(showId))
         ]);
+        
+        setShow(showData);
         setRecommendations(recommendationsData.results);
         setSimilarShows(similarData.results);
+        setVideos(videosData);
       } catch (error) {
         console.error('Error fetching TV show details:', error);
       } finally {
@@ -90,8 +95,8 @@ export default function TVShowDetailsComponent({ showId }: TVShowDetailsProps) {
   const isShowFavorite = isFavorite(show.id);
 
   return (
+    <div className="content-wrapper">
     <div className="relative min-h-screen bg-netflix-black">
-
       <Link
         href="/series"
         className="absolute top-4 left-4 z-20 text-white hover:text-white/80 transition-colors"
@@ -99,9 +104,7 @@ export default function TVShowDetailsComponent({ showId }: TVShowDetailsProps) {
         <ChevronLeftIcon className="w-8 h-8" />
       </Link>
 
-
       <div className="absolute inset-0">
-
         <div className="absolute inset-0 bg-netflix-black/80" />
         
         <Image
@@ -122,7 +125,7 @@ export default function TVShowDetailsComponent({ showId }: TVShowDetailsProps) {
         className="relative pt-20 px-4 md:px-8 max-w-7xl mx-auto"
       >
         <div className="grid grid-cols-1 md:grid-cols-[300px,1fr] gap-8">
-          {/* Poster */}
+
           <div className="relative aspect-[2/3] rounded-md overflow-hidden shadow-2xl">
             <Image
               src={getImageUrl(show.poster_path, 'w500')}
@@ -144,9 +147,13 @@ export default function TVShowDetailsComponent({ showId }: TVShowDetailsProps) {
             </div>
 
             <div className="flex space-x-3">
-              <button className="flex items-center justify-center px-6 py-2 bg-white text-netflix-black font-semibold rounded hover:bg-white/90 transition">
+              <button 
+                onClick={() => videos.length > 0 && setIsTrailerPlaying(true)}
+                className="flex items-center justify-center px-6 py-2 bg-white text-netflix-black font-semibold rounded hover:bg-white/90 transition"
+                disabled={videos.length === 0}
+              >
                 <PlayIcon className="w-6 h-6 mr-2" />
-                Reproducir
+                {videos.length > 0 ? 'Reproducir trailer' : 'No hay trailer disponible'}
               </button>
               <motion.button 
                 className={`flex items-center justify-center px-6 py-2 font-semibold rounded transition-colors ${
@@ -210,7 +217,8 @@ export default function TVShowDetailsComponent({ showId }: TVShowDetailsProps) {
           </div>
         </div>
 
-        <div className="relative z-10 mt-8 pb-20 overflow-x-hidden">
+        <div className="relative z-10 mt-8 pb-20">
+        <div className="relative -mx-4 md:-mx-8">
           {recommendations.length > 0 && (
             <ContentCarousel
               title="Recomendaciones"
@@ -227,7 +235,19 @@ export default function TVShowDetailsComponent({ showId }: TVShowDetailsProps) {
             />
           )}
         </div>
+        </div>
       </motion.div>
+
+      <AnimatePresence>
+        {isTrailerPlaying && videos.length > 0 && (
+          <TrailerPlayer
+            videoKey={videos[0].key}
+            title={show.name}
+            onClose={() => setIsTrailerPlaying(false)}
+          />
+        )}
+      </AnimatePresence>
+    </div>
     </div>
   );
 }

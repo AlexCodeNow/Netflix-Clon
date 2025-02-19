@@ -66,10 +66,32 @@ export interface Network {
   logo_path: string;
 }
 
+export interface Video {
+  id: string;
+  key: string;
+  name: string;
+  site: string;
+  size: number;
+  type: string;
+}
+
+export interface VideosResponse {
+  id: number;
+  results: Video[];
+}
+
 export const tmdbService = {
   getFeaturedMovie: async (): Promise<Movie> => {
     const response = await api.get<MoviesResponse>('/trending/movie/day');
     return response.data.results[0];
+  },
+
+  getMovieVideos: async (movieId: number): Promise<Video[]> => {
+    const response = await api.get<VideosResponse>(`/movie/${movieId}/videos`);
+    return response.data.results.filter(
+      video => video.site === 'YouTube' && 
+      (video.type === 'Trailer' || video.type === 'Teaser')
+    );
   },
 
   getPopularMovies: async (page = 1): Promise<MoviesResponse> => {
@@ -151,6 +173,14 @@ export const tmdbService = {
       params: { page },
     });
     return response.data;
+  },
+
+  getTVShowVideos: async (tvId: number): Promise<Video[]> => {
+    const response = await api.get<VideosResponse>(`/tv/${tvId}/videos`);
+    return response.data.results.filter(
+      video => video.site === 'YouTube' && 
+      (video.type === 'Trailer' || video.type === 'Teaser')
+    );
   },
 
   getTVShowDetails: async (tvId: number): Promise<TVShowDetails> => {

@@ -18,10 +18,19 @@ body {
     rgb(var(--background-start-rgb));
     overflow-x: hidden;
     max-width: 100vw;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
 }
 
 html {
   scroll-behavior: smooth;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  display: none;
 }
 
 ::-webkit-scrollbar {
@@ -38,10 +47,6 @@ html {
   background-color: #141414;
 }
 
-.carousel-container {
-  position: relative;
-  overflow: visible;
-}
 
 .carousel-arrow {
   height: calc(100% - 2rem);
@@ -55,47 +60,8 @@ html {
   border-radius: 15px;
 }
 
-.slick-prev,
-.slick-next,
-.slick-dots,
-.slick-dots li button:before,
-.slick-dots li button {
-  display: none !important;
-}
 
-.slick-list {
-  overflow: visible !important;
-  margin: 0;
-}
 
-.slick-track {
-  margin-left: 0;
-  display: flex !important;
-}
-
-.slick-slide {
-  padding: 0 2px;
-  transition: all 0.3s ease;
-  height: auto !important;
-}
-
-.slick-slide > div {
-  height: 100%;
-  width: 100%;
-}
-
-.slick-slide:hover {
-  transform: scale(1.3);
-  z-index: 10;
-}
-
-.slick-slide:hover ~ .slick-slide {
-  transform: translateX(30px);
-}
-
-.slick-slider {
-  margin: 0 !important;
-}
 
 .movie-card-image {
   aspect-ratio: 2/3;

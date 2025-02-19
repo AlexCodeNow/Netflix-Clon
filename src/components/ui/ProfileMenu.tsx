@@ -14,8 +14,8 @@ interface Profile {
 
 const profiles: Profile[] = [
   { id: 1, name: 'Usuario 1', imageUrl: '/images/default-profile.png' },
-  { id: 2, name: 'Usuario 2', imageUrl: '/images/default-profile.png' },
-  { id: 3, name: 'Niños', imageUrl: '/images/default-profile.png' },
+  { id: 2, name: 'Usuario 2', imageUrl: '/images/default-profile2.png' },
+  { id: 3, name: 'Niños', imageUrl: '/images/default-profile3.png' },
 ];
 
 const ProfileMenu = () => {

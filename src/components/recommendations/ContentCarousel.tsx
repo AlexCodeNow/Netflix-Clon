@@ -65,17 +65,17 @@ export default function ContentCarousel({ title, items, type }: ContentCarouselP
 
   return (
     <div 
-      className="mt-8"
+      className="group mt-8"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <h2 className="text-lg md:text-xl font-bold text-white mb-4 px-4 md:px-8">{title}</h2>
+      <h2 className="text-lg md:text-xl font-bold text-white mb-4 pl-4">{title}</h2>
       
       <div className="relative">
         {items.length > settings.slidesToShow && (
           <>
             <button
-              className={`absolute left-0 top-0 z-20 h-full w-12 bg-black/50 flex items-center justify-center transition-opacity duration-300 ${
+              className={`carousel-arrow absolute -left-4 top-0 z-20 h-full w-12 bg-black/50 flex items-center justify-center transition-opacity duration-300 ${
                 isHovered ? 'opacity-100' : 'opacity-0'
               }`}
               onClick={() => sliderRef.current?.slickPrev()}
@@ -84,7 +84,7 @@ export default function ContentCarousel({ title, items, type }: ContentCarouselP
             </button>
             
             <button
-              className={`absolute right-0 top-0 z-20 h-full w-12 bg-black/50 flex items-center justify-center transition-opacity duration-300 ${
+              className={`carousel-arrow absolute -right-4 top-0 z-20 h-full w-12 bg-black/50 flex items-center justify-center transition-opacity duration-300 ${
                 isHovered ? 'opacity-100' : 'opacity-0'
               }`}
               onClick={() => sliderRef.current?.slickNext()}
@@ -94,10 +94,10 @@ export default function ContentCarousel({ title, items, type }: ContentCarouselP
           </>
         )}
 
-        <div className="px-4 md:px-8">
+        <div className="px-4">
           <Slider ref={sliderRef} {...settings}>
             {items.map((item) => (
-              <div key={item.id} className="pr-2">
+              <div key={item.id} className="px-1">
                 {type === 'movie' ? (
                   <MovieCard movie={item as Movie} />
                 ) : (
