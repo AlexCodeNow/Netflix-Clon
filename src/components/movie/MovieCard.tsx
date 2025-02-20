@@ -81,7 +81,7 @@ const MovieCard = ({ movie }: MovieCardProps) => {
             <span className="text-green-500 text-xs font-semibold mb-4">{Math.round(movie.vote_average * 10)}% coincidencia</span>
             
             <div className="relative">
-              <p className="text-white/80 text-xs line-clamp-6">
+              <p className="text-white/80 text-base line-clamp-6">
                 {movie.overview}
               </p>
             <div className="absolute bottom-0 left-0 w-full h-4 bg-gradient-to-t from-netflix-black/80 to-transparent"></div>
