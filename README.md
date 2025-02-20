@@ -1,5 +1,7 @@
 # 🎬 Netflix Clone
 
+🚀 [Ver Demo](https://netflix-clone-ten-bice.vercel.app/)
+
 ## Descripción General
 Este proyecto es una réplica funcional de Netflix, desarrollada como ejercicio de aprendizaje y demostración de habilidades en desarrollo web moderno. La aplicación replica la experiencia visual y funcional de Netflix, incorporando características clave como navegación fluida, gestión de favoritos y una interfaz de usuario responsive.
 
